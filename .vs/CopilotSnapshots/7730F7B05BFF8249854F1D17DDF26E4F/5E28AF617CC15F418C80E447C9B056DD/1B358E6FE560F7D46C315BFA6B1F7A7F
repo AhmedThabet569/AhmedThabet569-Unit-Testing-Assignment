@@ -1,0 +1,52 @@
+﻿using NetArchTest.Rules;
+using ParkSmart.Application;
+using ParkSmart.Domain;
+using ParkSmart.Infrastructure;
+using System;
+using System.Collections.Generic;
+using System.Reflection.Metadata;
+using System.Text;
+
+namespace ParkSmart.ArchitectureTests
+{
+    public class DependencyTests
+    {
+        [Fact]
+        public void Domain_Should_Not_Depend_On_Any_Other_Project()
+        {
+            var result = Types.InAssembly(typeof(ParkingSession).Assembly)
+             .That()
+             .AreClasses()
+             .ShouldNot()
+             .HaveDependencyOnAny("ParkSmart.Application", "ParkSmart.Infrastructure", "ParkSmart.Console")
+             .GetResult();
+            Assert.True(result.IsSuccessful);
+
+        }
+        [Fact]
+        public void Application_Should_Depend_On_Domain_And_Not_Other_Projects()
+        {
+            var assembly = typeof(ApplicationReference).Assembly;
+            var result = Types.InAssembly(typeof(ApplicationReference).Assembly)
+             .That()
+             .AreClasses()
+             .Should()
+             .HaveDependencyOn("ParkSmart.Domain")
+             .ShouldNot()
+             .HaveDependencyOnAny("ParkSmart.Infrastructure", "ParkSmart.Console")
+             .GetResult();
+            Assert.True(result.IsSuccessful);
+        }
+        [Fact]
+        public void Infrastructure_Should_Not_Depend_Or_Console()
+        {
+            var result = Types.InAssembly(typeof(AssemblyReference).Assembly)
+             .That()
+             .AreClasses()
+             .ShouldNot()
+             .HaveDependencyOn("ParkSmart.Console")
+             .GetResult();
+            Assert.True(result.IsSuccessful);
+        }
+    }
+}
