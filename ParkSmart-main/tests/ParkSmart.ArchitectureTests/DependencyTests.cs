@@ -31,7 +31,7 @@ namespace ParkSmart.ArchitectureTests
              .That()
              .AreClasses()
              .Should()
-             .HaveDependencyOn("ParkSmart.Domain")  
+             .HaveDependencyOn("ParkSmart.Domain")
              .And()
              .NotHaveDependencyOnAny("ParkSmart.Infrastructure", "ParkSmart.Console")
              .GetResult();
